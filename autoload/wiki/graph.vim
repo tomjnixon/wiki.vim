@@ -207,7 +207,7 @@ let s:nodes = {}
 
 " }}}1
 function! s:file_to_node(file) abort " {{{1
-  return fnamemodify(a:file, ':t:r')
+  return wiki#paths#shorten_relative(a:file)
 endfunction
 
 " }}}1
