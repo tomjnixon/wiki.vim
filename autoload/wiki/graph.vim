@@ -56,7 +56,7 @@ function! wiki#graph#out(...) abort " {{{1
           \ '[v:val.node_to, l:current_path]')
 
     if !has_key(l:tree, l:node)
-      let l:tree[l:node] = join(l:current_path, ' / ')
+      let l:tree[l:node] = join(s:format_paths(l:current_path), ' > ')
     endif
   endwhile
 
@@ -96,7 +96,7 @@ function! wiki#graph#in(...) abort "{{{1
           \ '[v:val.node_from, l:current_path]')
 
     if !has_key(l:tree, l:node)
-      let l:tree[l:node] = join(l:current_path, ' / ')
+      let l:tree[l:node] = join(s:format_paths(l:current_path), ' < ')
     endif
   endwhile
 
@@ -236,3 +236,17 @@ function! s:output_to_scratch(name, lines) abort " {{{1
 endfunction
 
 " }}}1
+
+" make each absolute path in paths relative to the previous path
+function! s:format_paths(paths) abort
+    let l:out = []
+    let l:curdir = '/'
+
+    for l:path in a:paths
+        echo l:path . " " . l:curdir
+        call add(l:out, wiki#paths#relative('/' . l:path, l:curdir))
+        let l:curdir = fnamemodify('/' . l:path, ':h')
+    endfor
+
+    return l:out
+endfunction
